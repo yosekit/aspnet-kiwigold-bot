@@ -7,9 +7,7 @@ using Telegram.Bot.Types;
 
 namespace KiwigoldBot.Controllers
 {
-	[ApiController]
-	[Route("api/telegrambot")]
-	public class BotController : Controller
+	public class BotController : ControllerBase
 	{
 		private readonly BotUpdateHandler _updateHandler;
 
@@ -18,8 +16,10 @@ namespace KiwigoldBot.Controllers
 			_updateHandler = updateHandler;
         }
 
+		[HttpGet]
+		public IActionResult Index() => Ok("The server is started...");
+
         [HttpPost]
-		[Route("update")]
 		public async Task<IActionResult> Update(
 			[FromBody] Update update, CancellationToken cancellationToken)
 		{
@@ -28,8 +28,5 @@ namespace KiwigoldBot.Controllers
 			await _updateHandler.HandleUpdateAsync(update, cancellationToken);
 			return Ok();
 		}
-
-		[HttpGet]
-		public string Index() => "The server is started";
 	}
 }

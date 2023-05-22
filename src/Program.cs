@@ -1,31 +1,32 @@
-using Telegram.Bot;
-
 using KiwigoldBot;
 using KiwigoldBot.Services;
+using KiwigoldBot.Controllers;
+using KiwigoldBot.Extensions.Di;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton(
-	builder.Configuration.GetSection(BotSettings.JsonName).Get<BotSettings>()!);
+// settings
+builder.Services.AddBotSettings(builder.Configuration);
 
-builder.Services
-	.AddHttpClient("telegram_bot_client")
-	.AddTypedClient<ITelegramBotClient>((client, sp) =>
-	{
-		var settings = sp.GetRequiredService<BotSettings>();
-		var options = new TelegramBotClientOptions(settings.Token);
-		return new TelegramBotClient(options, client);
-	});
+// http client
+builder.Services.AddBotClient();
 
-builder.Services.AddScoped<BotUpdateHandler>();
+// services
+builder.Services.AddSingleton<BotUpdateHandler>();
 
+// hosted service
 builder.Services.AddHostedService<BotWebhookHosted>();
 
+// built-in services
 builder.Services
 	.AddControllers()
 	.AddNewtonsoftJson();
 
+
 var app = builder.Build();
+
+app.MapBotWebhook<BotController>(
+	app.Services.GetRequiredService<BotSettings>().Route);
 
 app.MapControllers();
 

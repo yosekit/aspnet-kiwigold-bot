@@ -1,9 +1,10 @@
-﻿using Telegram.Bot;
+﻿using System.Diagnostics;
+
+using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
-using System.Diagnostics;
 
 namespace KiwigoldBot.Services
 {
@@ -14,22 +15,26 @@ namespace KiwigoldBot.Services
         public BotUpdateHandler(ITelegramBotClient botClient)
         {
             _botClient = botClient;
+			
         }
 
-		private async Task OnUnknown(Update update, CancellationToken cancellationToken)
+		private Task OnUnknown(Update update, CancellationToken cancellationToken)
 		{
-			throw new NotImplementedException();
+            // TODO: log
+
+            return Task.CompletedTask;
 		}
 
 		private async Task OnMessage(Message message, CancellationToken cancellationToken)
 		{
 			string messageText = message.Text ?? string.Empty;
 
-			Debug.WriteLine($"\nReceived a '{messageText}' message in chat {message.Chat.Id}.\n");
+            // TODO: log
+            Debug.WriteLine($"\nReceived a '{messageText}' message in chat {message.Chat.Id}.\n");
 
 			await _botClient.SendTextMessageAsync(
 				chatId: message.Chat.Id, 
-				text: "Hello", 
+				text: messageText, 
 				cancellationToken: cancellationToken);
 		}
 
@@ -44,7 +49,7 @@ namespace KiwigoldBot.Services
 			await handler;
 		}
 
-		public async Task HandlePollingErrorAsync(Exception exception, CancellationToken cancellationToken)
+		public Task HandlePollingErrorAsync(Exception exception, CancellationToken cancellationToken)
 		{
 			var errorMessage = exception switch
 			{
@@ -53,8 +58,10 @@ namespace KiwigoldBot.Services
 				_ => exception.ToString()
 			};
 
-			Console.WriteLine($"\nException: {errorMessage}\n");
-			return;
+			// TODO: log
+			Debug.WriteLine($"\nException: {errorMessage}\n");
+
+			return Task.CompletedTask;
 		}
 	}
 }

@@ -16,23 +16,24 @@ namespace KiwigoldBot.Services
 
         public async Task StartAsync(CancellationToken cancellationToken)
 		{
-			using var scope = _serviceProvider.CreateScope();
-			var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
+			var botClient = _serviceProvider.GetRequiredService<ITelegramBotClient>();
 
-			string webhookAddress =_botSettings.HostAddress + _botSettings.Route;
-
+			string webhookAddress = _botSettings.HostAddress + _botSettings.Route;
+ 
 			await botClient.SetWebhookAsync(
 				url: webhookAddress,
 				allowedUpdates: Array.Empty<UpdateType>(),
+				dropPendingUpdates: true,
 				cancellationToken: cancellationToken);
 		}
 
 		public async Task StopAsync(CancellationToken cancellationToken)
 		{
-			using var scope = _serviceProvider.CreateScope();
-			var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
+			var botClient = _serviceProvider.GetRequiredService<ITelegramBotClient>();
 
-			await botClient.DeleteWebhookAsync(cancellationToken: cancellationToken);
+			await botClient.DeleteWebhookAsync(
+                dropPendingUpdates: true, 
+				cancellationToken: cancellationToken);
 		}
 	}
 }

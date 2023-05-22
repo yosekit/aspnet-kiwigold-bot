@@ -1,6 +1,6 @@
 ﻿namespace KiwigoldBot
 {
-	public class BotSettings
+    public class BotSettings
 	{
 		public static readonly string JsonName = "TelegramBot";
 
