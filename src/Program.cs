@@ -1,6 +1,7 @@
 using KiwigoldBot;
 using KiwigoldBot.Services;
 using KiwigoldBot.Controllers;
+using KiwigoldBot.Interfaces;
 using KiwigoldBot.Extensions.Di;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,8 @@ builder.Services.AddBotSettings(builder.Configuration);
 builder.Services.AddBotClient();
 
 // services
+builder.Services.AddSingleton<IBotCommandService, BotCommandService>();
+builder.Services.AddSingleton<BotMessageHandler>();
 builder.Services.AddSingleton<BotUpdateHandler>();
 
 // hosted service
@@ -24,6 +27,8 @@ builder.Services
 
 
 var app = builder.Build();
+
+app.SetBotCommands();
 
 app.MapBotWebhook<BotController>(
 	app.Services.GetRequiredService<BotSettings>().Route);

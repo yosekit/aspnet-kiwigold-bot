@@ -1,4 +1,6 @@
-﻿namespace KiwigoldBot
+﻿using Telegram.Bot.Types;
+
+namespace KiwigoldBot
 {
     public class BotSettings
 	{
@@ -8,5 +10,6 @@
 		public string Token { get; set; } = string.Empty;
 		public string HostAddress { get; set; } = string.Empty;
 		public string Route { get; set; } = string.Empty;
+		public IEnumerable<BotCommand> Commands { get; set; }
     }
 }
