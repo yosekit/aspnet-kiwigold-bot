@@ -1,4 +1,5 @@
-﻿using Telegram.Bot;
+﻿using KiwigoldBot.Settings;
+using Telegram.Bot;
 
 namespace KiwigoldBot.Extensions.Di
 {

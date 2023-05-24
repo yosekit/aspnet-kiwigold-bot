@@ -1,9 +1,10 @@
-﻿using Telegram.Bot;
+﻿using KiwigoldBot.Settings;
+using Telegram.Bot;
 using Telegram.Bot.Types.Enums;
 
 namespace KiwigoldBot.Services
 {
-	public class BotWebhookHosted : IHostedService
+    public class BotWebhookHosted : IHostedService
 	{
 		private readonly IServiceProvider _serviceProvider;
 		private readonly BotSettings _botSettings;

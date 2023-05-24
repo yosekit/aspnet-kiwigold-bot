@@ -11,12 +11,12 @@ namespace KiwigoldBot.Services
 {
     public class BotUpdateHandler
 	{
-		private readonly ITelegramBotClient _botClient;
+		private readonly ITelegramBotClient _client;
 		private readonly BotMessageHandler _messageHandler;
 
-        public BotUpdateHandler(ITelegramBotClient botClient, BotMessageHandler messageHandler)
+        public BotUpdateHandler(ITelegramBotClient client, BotMessageHandler messageHandler)
         {
-            _botClient = botClient;
+            _client = client;
 			_messageHandler = messageHandler;
         }
 

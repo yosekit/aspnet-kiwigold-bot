@@ -1,13 +1,19 @@
-using KiwigoldBot;
 using KiwigoldBot.Services;
 using KiwigoldBot.Controllers;
 using KiwigoldBot.Interfaces;
 using KiwigoldBot.Extensions.Di;
+using KiwigoldBot.Settings;
+using KiwigoldBot.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // settings
 builder.Services.AddBotSettings(builder.Configuration);
+
+// data services
+builder.Services.AddDbConnectionManager(builder.Configuration.ConnectionString("Sqlite")!);
+builder.Services.AddSingleton<IDbContext, DapperContext>();
+builder.Services.AddSingleton<IRepository, GenericRepository>();
 
 // http client
 builder.Services.AddBotClient();

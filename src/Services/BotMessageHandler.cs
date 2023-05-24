@@ -3,6 +3,7 @@ using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types;
 
 using KiwigoldBot.Interfaces;
+using KiwigoldBot.Models;
 
 namespace KiwigoldBot.Services
 {
@@ -10,11 +11,16 @@ namespace KiwigoldBot.Services
 	{
         private readonly ITelegramBotClient _client;
         private readonly IBotCommandService _commands;
+        private readonly IRepository _repository;
 
-        public BotMessageHandler(ITelegramBotClient client, IBotCommandService commandService)
+        public BotMessageHandler(
+            ITelegramBotClient client, 
+            IBotCommandService commandService,
+            IRepository repository)
         {
             _client = client;
             _commands = commandService;
+            _repository = repository;
         }
 
         public async Task HandleMessageAsync(Message message, CancellationToken cancellationToken)
@@ -30,8 +36,6 @@ namespace KiwigoldBot.Services
 
         private async Task OnText(Message message, CancellationToken cancellationToken)
         {
-            // string phtotoId = message.Photo.Last().FileId;
-
             string messageText = message.Text!;
 
             var command = _commands.Get(messageText);
@@ -42,7 +46,11 @@ namespace KiwigoldBot.Services
             } 
             else
             {
-                await _client.SendTextMessageAsync(message.Chat.Id, messageText, cancellationToken: cancellationToken);
+                // Example
+                object result = _repository.Get<Picture>(1);
+
+                await _client.SendTextMessageAsync(message.Chat.Id, result.ToString() ?? "null", 
+                    cancellationToken: cancellationToken);
             }
 
         }

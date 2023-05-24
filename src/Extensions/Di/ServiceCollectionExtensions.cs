@@ -1,4 +1,9 @@
-﻿using Telegram.Bot;
+﻿using KiwigoldBot.Data;
+using KiwigoldBot.Interfaces;
+using KiwigoldBot.Settings;
+using System.Data.Common;
+using System.Data.SQLite;
+using Telegram.Bot;
 
 namespace KiwigoldBot.Extensions.Di
 {
@@ -24,6 +29,18 @@ namespace KiwigoldBot.Extensions.Di
             var settings = configuration.GetSection(BotSettings.JsonName).Get<BotSettings>()!;
 
             return services.AddSingleton(settings);
+        }
+
+        public static IServiceCollection AddDbConnectionManager(this IServiceCollection services,
+            ConnectionStringSettings connectionString)
+        {
+            DbProviderFactories.RegisterFactory(
+                 connectionString.Provider.InvariantName, 
+                 connectionString.Provider.TypeAssemblyName);
+
+            return services.AddSingleton<IDbConnectionManager>(new DbConnectionManager(
+                DbProviderFactories.GetFactory(connectionString.Provider.InvariantName),
+                connectionString.ConnectionString));
         }
     }
 }

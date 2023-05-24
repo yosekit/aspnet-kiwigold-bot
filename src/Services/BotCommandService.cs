@@ -2,6 +2,7 @@
 
 using KiwigoldBot.Interfaces;
 using KiwigoldBot.Commands;
+using KiwigoldBot.Settings;
 
 namespace KiwigoldBot.Services
 {
