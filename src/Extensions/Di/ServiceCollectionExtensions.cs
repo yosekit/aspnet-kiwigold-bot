@@ -24,9 +24,9 @@ namespace KiwigoldBot.Extensions.Di
         }
 
         public static IServiceCollection AddBotSettings(this IServiceCollection services,
-            IConfiguration configuration)
+            IConfiguration configuration, string section = "TelegramBot")
         {
-            var settings = configuration.GetSection(BotSettings.JsonName).Get<BotSettings>()!;
+            var settings = configuration.GetSection(section).Get<BotSettings>()!;
 
             return services.AddSingleton(settings);
         }

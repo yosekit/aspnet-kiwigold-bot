@@ -1,6 +1,6 @@
 ﻿namespace KiwigoldBot.Models
 {
-    public class Hashtag
+    public record Hashtag
     {
         public int Id { get; set; }
         public string Name { get; set; }

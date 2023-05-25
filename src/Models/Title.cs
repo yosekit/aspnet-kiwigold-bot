@@ -1,6 +1,6 @@
 ﻿namespace KiwigoldBot.Models
 {
-    public class Title
+    public record Title
     {
         public int Id { get; set; }
         public string Name { get; set; }

@@ -47,7 +47,7 @@ namespace KiwigoldBot.Services
             else
             {
                 // Example
-                object result = _repository.Get<Picture>(1);
+                var result = _repository.Get<Picture>(1);
 
                 await _client.SendTextMessageAsync(message.Chat.Id, result.ToString() ?? "null", 
                     cancellationToken: cancellationToken);

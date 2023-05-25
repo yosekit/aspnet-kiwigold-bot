@@ -4,8 +4,6 @@ namespace KiwigoldBot.Settings
 {
     public class BotSettings
     {
-        public static readonly string JsonName = "TelegramBot";
-
         public string Username { get; set; }
         public string Token { get; set; }
         public string HostAddress { get; set; }

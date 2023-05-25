@@ -1,8 +1,8 @@
 ﻿namespace KiwigoldBot.Models
 {
-    public class Picture
+    public record Picture
     {
         public int Id { get; set; }
-        public string PhotoId { get; set; }
+        public string FileId { get; set; }
     }
 }
