@@ -1,17 +1,20 @@
-﻿using System.Threading;
+﻿using KiwigoldBot.Interfaces;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.ReplyMarkups;
 
 namespace KiwigoldBot.Commands
 {
-    public class StartCommand : BotCommandBase
+    public class StartCommand : IBotCommand
     {
-        public StartCommand(ITelegramBotClient client) : base(client)
+        private readonly ITelegramBotClient _client;
+
+        public StartCommand(ITelegramBotClient client)
         {
+            _client = client;
         }
 
-        public override async Task ExecuteAsync(Message message, CancellationToken cancellationToken)
+        public async Task ExecuteAsync(Message message, CancellationToken cancellationToken)
         {
             string text = "Hello, I'm TestBot.";
 

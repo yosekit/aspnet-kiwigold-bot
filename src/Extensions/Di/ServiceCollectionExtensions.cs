@@ -1,9 +1,12 @@
-﻿using KiwigoldBot.Data;
+﻿using KiwigoldBot.Callbacks;
+using KiwigoldBot.Commands;
+using KiwigoldBot.Data;
+using KiwigoldBot.Handlers;
 using KiwigoldBot.Interfaces;
 using KiwigoldBot.Settings;
 using System.Data.Common;
-using System.Data.SQLite;
 using Telegram.Bot;
+using Telegram.Bot.Types;
 
 namespace KiwigoldBot.Extensions.Di
 {
@@ -35,12 +38,35 @@ namespace KiwigoldBot.Extensions.Di
             ConnectionStringSettings connectionString)
         {
             DbProviderFactories.RegisterFactory(
-                 connectionString.Provider.InvariantName, 
+                 connectionString.Provider.InvariantName,
                  connectionString.Provider.TypeAssemblyName);
 
             return services.AddSingleton<IDbConnectionManager>(new DbConnectionManager(
                 DbProviderFactories.GetFactory(connectionString.Provider.InvariantName),
                 connectionString.ConnectionString));
+        }
+
+        public static IServiceCollection AddBotCommands(this IServiceCollection services)
+        {
+            return services
+                .AddScoped<IBotCommand, HelpCommand>()
+                .AddScoped<IBotCommand, StartCommand>();
+        }
+
+        public static IServiceCollection AddBotCallbacks(this IServiceCollection services)
+        {
+            return services
+                .AddScoped<IBotCallback, PictureFromLinkCallback>()
+                .AddScoped<IBotCallback, PictureSavedCallback>();
+        }   
+
+        public static IServiceCollection AddBotHandlers(this IServiceCollection services)
+        {
+            return services
+                .AddScoped<IBotCommandHandler, BotCommandHandler>()
+                .AddScoped<IBotMessageHandler, BotMessageHandler>()
+                .AddScoped<IBotCallbackQueryHandler, BotCallbackQueryHandler>()
+                .AddScoped<IBotUpdateHandler, BotUpdateHandler>();
         }
     }
 }

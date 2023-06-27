@@ -1,15 +1,19 @@
-﻿using Telegram.Bot;
+﻿using KiwigoldBot.Interfaces;
+using Telegram.Bot;
 using Telegram.Bot.Types;
 
 namespace KiwigoldBot.Commands
 {
-    public class HelpCommand : BotCommandBase
+    public class HelpCommand : IBotCommand
     {
-        public HelpCommand(ITelegramBotClient client) : base(client)
+        private readonly ITelegramBotClient _client;
+
+        public HelpCommand(ITelegramBotClient client)
         {
+            _client = client;
         }
 
-        public override async Task ExecuteAsync(Message message, CancellationToken cancellationToken)
+        public async Task ExecuteAsync(Message message, CancellationToken cancellationToken)
         {
             string text = """
                 This is a help message.

@@ -19,9 +19,13 @@ builder.Services.AddSingleton<IDbRepository, GenericRepository>();
 builder.Services.AddBotClient();
 
 // services
-builder.Services.AddSingleton<IBotCommandService, BotCommandService>();
-builder.Services.AddSingleton<BotMessageHandler>();
-builder.Services.AddSingleton<BotUpdateHandler>();
+builder.Services.AddBotCommands();
+builder.Services.AddBotCallbacks();
+builder.Services.AddBotHandlers();
+
+builder.Services.AddSingleton<IBotCallbackContext, BotCallbackContext>();
+builder.Services.AddScoped<IBotCallbackManager, BotCallbackManager>();
+builder.Services.AddScoped<IBotPictureService, BotPictureService>();
 
 // hosted service
 builder.Services.AddHostedService<BotWebhookHosted>();
@@ -33,8 +37,6 @@ builder.Services
 
 
 var app = builder.Build();
-
-app.SetBotCommands();
 
 app.MapBotWebhook<BotController>(
 	app.Services.GetRequiredService<BotSettings>().Route);

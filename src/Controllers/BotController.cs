@@ -1,17 +1,16 @@
-﻿using KiwigoldBot.Services;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-using Telegram.Bot;
-using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
+
+using KiwigoldBot.Interfaces;
 
 namespace KiwigoldBot.Controllers
 {
-	public class BotController : ControllerBase
+    public class BotController : ControllerBase
 	{
-		private readonly BotUpdateHandler _updateHandler;
+		private readonly IBotUpdateHandler _updateHandler;
 
-        public BotController(BotUpdateHandler updateHandler)
+        public BotController(IBotUpdateHandler updateHandler)
         {
 			_updateHandler = updateHandler;
         }
