@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 
 using KiwigoldBot.Interfaces;
 
@@ -17,10 +18,16 @@ namespace KiwigoldBot.Data
 
         public DbConnection GetConnection()
         {
-            var conn = _providerFactory.CreateConnection() ?? throw new Exception("DbConnection is null");
-            conn.ConnectionString = _connectionString;
+            var conn = _providerFactory.CreateConnection();
 
-            return conn;
+            if (conn != null || conn.State == ConnectionState.Closed)
+            {
+                conn.ConnectionString = _connectionString;
+                conn.Open();
+
+                return conn;
+            }
+            else throw new Exception("DB Connection is not established");
         }
     }
 }

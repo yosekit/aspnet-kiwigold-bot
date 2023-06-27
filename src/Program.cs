@@ -13,7 +13,7 @@ builder.Services.AddBotSettings(builder.Configuration);
 // data services
 builder.Services.AddDbConnectionManager(builder.Configuration.ConnectionString("Sqlite")!);
 builder.Services.AddSingleton<IDbContext, DapperContext>();
-builder.Services.AddSingleton<IRepository, GenericRepository>();
+builder.Services.AddSingleton<IDbRepository, GenericRepository>();
 
 // http client
 builder.Services.AddBotClient();
