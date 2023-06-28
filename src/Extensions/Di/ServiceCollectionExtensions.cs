@@ -55,6 +55,9 @@ namespace KiwigoldBot.Extensions.Di
 
         public static IServiceCollection AddBotCallbacks(this IServiceCollection services)
         {
+            services.AddSingleton<IBotCallbackStateManager, BotCallbackStateManager>();
+            services.AddScoped<IBotCallbackResolver, BotCallbackResolver>();
+
             return services
                 .AddScoped<IBotCallback, PictureFromLinkCallback>()
                 .AddScoped<IBotCallback, PictureSavedCallback>();

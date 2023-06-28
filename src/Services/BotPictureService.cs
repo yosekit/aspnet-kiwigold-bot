@@ -12,16 +12,16 @@ namespace KiwigoldBot.Services
     {
         private readonly ITelegramBotClient _client;
         private readonly IDbRepository _repository;
-        private readonly IBotCallbackContext _callbackContext;
+        private readonly IBotCallbackStateManager _callbackStateManager;
 
         public BotPictureService(
             ITelegramBotClient client,
             IDbRepository repository,
-            IBotCallbackContext callbackContext)
+            IBotCallbackStateManager callbackStateManager)
         {
             _client = client;
             _repository = repository;
-            _callbackContext = callbackContext;
+            _callbackStateManager = callbackStateManager;
         }
 
 
@@ -36,7 +36,7 @@ namespace KiwigoldBot.Services
 
                 var inlineKeyboard = new InlineKeyboardMarkup(inlineKeyboardButtons);
 
-                _callbackContext.Active = typeof(PictureSavedCallback);
+                _callbackStateManager.SetActive<PictureSavedCallback>();
 
                 await _client.SendTextMessageAsync(
                     chatId: message.Chat.Id,
@@ -78,7 +78,7 @@ namespace KiwigoldBot.Services
                     InlineKeyboardButton.WithCallbackData("Delete", PictureFromLinkCallbackData.Delete.ToString()),
                 });
 
-            _callbackContext.Active = typeof(PictureFromLinkCallback);
+            _callbackStateManager.SetActive<PictureFromLinkCallback>();
 
             await _client.SendPhotoAsync(
                 chatId: message.Chat.Id,

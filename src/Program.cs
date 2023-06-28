@@ -23,8 +23,6 @@ builder.Services.AddBotCommands();
 builder.Services.AddBotCallbacks();
 builder.Services.AddBotHandlers();
 
-builder.Services.AddSingleton<IBotCallbackContext, BotCallbackContext>();
-builder.Services.AddScoped<IBotCallbackManager, BotCallbackManager>();
 builder.Services.AddScoped<IBotPictureService, BotPictureService>();
 
 // hosted service
