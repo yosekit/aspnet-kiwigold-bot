@@ -7,26 +7,26 @@ namespace KiwigoldBot.Handlers
 {
     public class BotCommandHandler : IBotCommandHandler
     {
-        private readonly Dictionary<string, IBotCommand> _commands;
+        private readonly IBotCommandResolver _commands;
 
-        public BotCommandHandler(IEnumerable<IBotCommand> commands)
+        public BotCommandHandler(IBotCommandResolver commands)
         {
-            _commands = MapCommands(commands);
+            _commands = commands;
         }
 
         public async Task HandleCommandAsync(Message message, CancellationToken cancellationToken)
         {
-            var command = Get(message.Text!);
+            string name = message.Text!;
 
-            if (command == null) return;
+            var command = _commands.Get(name);
+            if (command == null) 
+            {
+                // TODO: log
+
+                return;
+            }
 
             await command.ExecuteAsync(message, cancellationToken);
         }
-
-        private static Dictionary<string, IBotCommand> MapCommands(IEnumerable<IBotCommand> commands) =>
-            commands.ToDictionary(x => string.Concat("/", x.GetType().Name.Replace("Command", "").ToLower()));
-
-        // e.g. /help => HelpCommand
-        private IBotCommand? Get(string name) => _commands.GetValueOrDefault(name);
     }
 }

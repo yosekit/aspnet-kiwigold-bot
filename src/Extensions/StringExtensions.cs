@@ -8,6 +8,8 @@
 
         public static bool IsCommand(this string origin)
         {
+            // TODO: change handling command name
+
             return origin.StartsWith("/");
         }
 

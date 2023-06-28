@@ -1,12 +1,15 @@
-﻿using KiwigoldBot.Callbacks;
+﻿using System.Data.Common;
+
+using Telegram.Bot;
+using Telegram.Bot.Types;
+
+using KiwigoldBot.Callbacks;
 using KiwigoldBot.Commands;
 using KiwigoldBot.Data;
 using KiwigoldBot.Handlers;
 using KiwigoldBot.Interfaces;
+using KiwigoldBot.Services;
 using KiwigoldBot.Settings;
-using System.Data.Common;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace KiwigoldBot.Extensions.Di
 {
@@ -48,9 +51,13 @@ namespace KiwigoldBot.Extensions.Di
 
         public static IServiceCollection AddBotCommands(this IServiceCollection services)
         {
+            services.AddSingleton<IBotCommandPoolManager, BotCommandPoolManager>();
+            services.AddScoped<IBotCommandResolver, BotCommandResolver>();
+
             return services
+                .AddScoped<IBotCommand, StartCommand>()
                 .AddScoped<IBotCommand, HelpCommand>()
-                .AddScoped<IBotCommand, StartCommand>();
+                .AddScoped<IBotCommand, AddAuthorCommand>();
         }
 
         public static IServiceCollection AddBotCallbacks(this IServiceCollection services)
@@ -67,6 +74,8 @@ namespace KiwigoldBot.Extensions.Di
         {
             return services
                 .AddScoped<IBotCommandHandler, BotCommandHandler>()
+                .AddScoped<IBotPhotoHandler, BotPhotoHandler>()
+                .AddScoped<IBotTextHandler, BotTextHandler>()
                 .AddScoped<IBotMessageHandler, BotMessageHandler>()
                 .AddScoped<IBotCallbackQueryHandler, BotCallbackQueryHandler>()
                 .AddScoped<IBotUpdateHandler, BotUpdateHandler>();
