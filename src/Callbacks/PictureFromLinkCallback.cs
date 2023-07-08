@@ -21,6 +21,8 @@ namespace KiwigoldBot.Callbacks
         {
             if(!Enum.TryParse<PictureFromLinkCallbackData>(data, out var parsedData))
             {
+                // TODO: log
+
                 return;
             }
 

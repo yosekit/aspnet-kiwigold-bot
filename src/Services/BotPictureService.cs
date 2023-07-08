@@ -5,6 +5,7 @@ using Telegram.Bot.Types.ReplyMarkups;
 using KiwigoldBot.Callbacks;
 using KiwigoldBot.Interfaces;
 using KiwigoldBot.Models;
+using KiwigoldBot.Extensions;
 
 namespace KiwigoldBot.Services
 {
@@ -24,10 +25,30 @@ namespace KiwigoldBot.Services
             _callbackStateManager = callbackStateManager;
         }
 
+        public async Task ShowAllPicturesAsync(Message message, CancellationToken cancellationToken)
+        {
+            var pictures = _repository.GetAll<Picture>();
+
+            if (pictures.IsAny())
+            {
+                var mediaGroup = pictures.Take(5).Select(x => new InputMediaPhoto(x.FileId));
+
+                await _client.SendMediaGroupAsync(message.Chat.Id, mediaGroup, cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await _client.SendTextMessageAsync(
+                    chatId: message.Chat.Id,
+                    text: "You haven't saved any pictures...",
+                    cancellationToken: cancellationToken);
+            }
+        }
 
         public async Task SavePictureAsync(string fileId, Message message, CancellationToken cancellationToken)
         {
-            if (_repository.Add(new Picture { FileId = fileId }))
+            bool added = _repository.Add(new Picture { FileId = fileId });
+
+            if (added)
             {
                 var pictures = _repository.GetAll<Picture>();
 
@@ -86,7 +107,5 @@ namespace KiwigoldBot.Services
                 replyMarkup: inlineKeyboard,
                 cancellationToken: cancellationToken);
         }
-
-        
     }
 }

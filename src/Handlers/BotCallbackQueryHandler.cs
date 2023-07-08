@@ -6,14 +6,13 @@ namespace KiwigoldBot.Handlers
 {
     public class BotCallbackQueryHandler : IBotCallbackQueryHandler
     {
-        private readonly IBotCallbackStateManager _stateManager;
+        private readonly IBotCallbackStateManager _callbackState;
         private readonly IBotCallbackResolver _callbacks;
 
-        public BotCallbackQueryHandler(IBotCallbackStateManager stateManager, IBotCallbackResolver callbacks)
+        public BotCallbackQueryHandler(IBotCallbackStateManager callbackState, IBotCallbackResolver callbacks)
         {
-            _stateManager = stateManager;
+            _callbackState = callbackState;
             _callbacks = callbacks;
-
         }
 
         public async Task HandleCallbackQueryAsync(CallbackQuery callbackQuery, CancellationToken cancellationToken)
@@ -25,7 +24,7 @@ namespace KiwigoldBot.Handlers
 
         private async Task RequestAsync(string callbackData, Message message, CancellationToken cancellationToken)
         {
-            var activeType = _stateManager.GetActive();
+            var activeType = _callbackState.GetActive();
             if(activeType == null)
             {
                 // TODO: log
@@ -43,7 +42,7 @@ namespace KiwigoldBot.Handlers
 
             await active.InvokeAsync(callbackData, message, cancellationToken);
 
-            _stateManager.RemoveActive();
+            _callbackState.RemoveActive();
         }
 
     }

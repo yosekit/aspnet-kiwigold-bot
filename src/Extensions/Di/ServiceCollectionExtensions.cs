@@ -57,7 +57,10 @@ namespace KiwigoldBot.Extensions.Di
             return services
                 .AddScoped<IBotCommand, StartCommand>()
                 .AddScoped<IBotCommand, HelpCommand>()
-                .AddScoped<IBotCommand, AddAuthorCommand>();
+                .AddScoped<IBotCommand, AddAuthorCommand>()
+                .AddScoped<IBotCommand, AddTitleCommand>()
+                .AddScoped<IBotCommand, AddHashtagCommand>()
+                .AddScoped<IBotCommand, ShowCommand>();
         }
 
         public static IServiceCollection AddBotCallbacks(this IServiceCollection services)
@@ -67,7 +70,8 @@ namespace KiwigoldBot.Extensions.Di
 
             return services
                 .AddScoped<IBotCallback, PictureFromLinkCallback>()
-                .AddScoped<IBotCallback, PictureSavedCallback>();
+                .AddScoped<IBotCallback, PictureSavedCallback>()
+                .AddScoped<IBotCallback, ShowCallback>();
         }   
 
         public static IServiceCollection AddBotHandlers(this IServiceCollection services)

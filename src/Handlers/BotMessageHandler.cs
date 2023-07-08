@@ -3,6 +3,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 using KiwigoldBot.Interfaces;
+using KiwigoldBot.Extensions;
 
 namespace KiwigoldBot.Handlers
 {
@@ -10,20 +11,24 @@ namespace KiwigoldBot.Handlers
     {
         private readonly IBotTextHandler _textHandler;
         private readonly IBotPhotoHandler _photoHandler;
-        private readonly IBotCommandPoolManager _commandPoolManager;
+        private readonly IBotCommandPoolManager _commandPool;
         
-        public BotMessageHandler(IBotTextHandler textHandler, IBotPhotoHandler photoHandler, IBotCommandPoolManager commandPoolManager)
+        public BotMessageHandler(IBotTextHandler textHandler, IBotPhotoHandler photoHandler, IBotCommandPoolManager commandPool)
         {
             _textHandler = textHandler;
             _photoHandler = photoHandler;
-            _commandPoolManager = commandPoolManager;
+            _commandPool = commandPool;
         }
 
         public async Task HandleMessageAsync(Message message, CancellationToken cancellationToken)
         {
-            if (_commandPoolManager.IsActive)
+            if (message.Type == MessageType.Text && message.Text!.IsCommand())
             {
-                await _commandPoolManager.ExecuteLastAsync(message, cancellationToken);
+                _commandPool.Clear();
+            }
+            else if (_commandPool.IsActive())
+            {
+                await _commandPool.ExecuteLastAsync(message, cancellationToken);
 
                 return;
             }
