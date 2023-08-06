@@ -14,11 +14,16 @@ namespace KiwigoldBot.Handlers
     {
         private readonly IBotMessageHandler _messageHandler;
         private readonly IBotCallbackQueryHandler _callbackQueryHandler;
+        private readonly IBotChannelPostHandler _channelPostHandler;
 
-        public BotUpdateHandler(IBotMessageHandler messageHandler, IBotCallbackQueryHandler callbackQueryHandler)
+        public BotUpdateHandler(
+            IBotMessageHandler messageHandler,
+            IBotCallbackQueryHandler callbackQueryHandler,
+            IBotChannelPostHandler channelPostHandler)
         {
             _messageHandler = messageHandler;
             _callbackQueryHandler = callbackQueryHandler;
+            _channelPostHandler = channelPostHandler;
         }
 
         public Task HandlePollingErrorAsync(Exception exception, CancellationToken cancellationToken)
@@ -42,6 +47,7 @@ namespace KiwigoldBot.Handlers
             {
                 UpdateType.Message => _messageHandler.HandleMessageAsync(update.Message!, cancellationToken),
                 UpdateType.CallbackQuery => _callbackQueryHandler.HandleCallbackQueryAsync(update.CallbackQuery!, cancellationToken),
+                UpdateType.ChannelPost => _channelPostHandler.HandleChannelPostAsync(update.ChannelPost!, cancellationToken),
                 _ => OnDiscard(update, cancellationToken)
             };
 

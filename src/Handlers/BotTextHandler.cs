@@ -24,7 +24,7 @@ namespace KiwigoldBot.Handlers
             var handler = text.GetTextType() switch
             {
                 TextType.Command => _commandHandler.HandleCommandAsync(message, cancellationToken),
-                // TODO: add link handler `cause there are different links
+                // TODO: add LinkHandler because there are different links
                 TextType.Link => _pictureService.SendPictureFromLinkAsync(text, message, cancellationToken),
                 TextType.PlainText => this.HandlePlainTextAsync(message, cancellationToken),
                 _ => OnDiscard(message, cancellationToken),

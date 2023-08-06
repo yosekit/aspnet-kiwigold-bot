@@ -7,19 +7,18 @@ namespace KiwigoldBot.Callbacks
 {
     public class PictureFromLinkCallback : IBotCallback
     {
-        private readonly ITelegramBotClient _client;
+        private readonly IBotMessenger _messenger;
         private readonly IBotPictureService _pictureService;
 
-        public PictureFromLinkCallback(ITelegramBotClient client, IBotPictureService pictureService)
+        public PictureFromLinkCallback(IBotMessenger messenger, IBotPictureService pictureService)
         {
-            _client = client;
+            _messenger = messenger;
             _pictureService = pictureService;
-
         }
 
         public async Task InvokeAsync(string data, Message message, CancellationToken cancellationToken)
         {
-            if(!Enum.TryParse<PictureFromLinkCallbackData>(data, out var parsedData))
+            if (!Enum.TryParse<PictureFromLinkCallbackData>(data, out var parsedData))
             {
                 // TODO: log
 
@@ -38,8 +37,7 @@ namespace KiwigoldBot.Callbacks
 
                 case PictureFromLinkCallbackData.Delete:
                     {
-                        // delete last message
-                        await _client.DeleteMessageAsync(message.Chat.Id, message.MessageId, cancellationToken);
+                        await _messenger.DeleteLastMessageAsync(cancellationToken: cancellationToken);
                         break;
                     }
             }

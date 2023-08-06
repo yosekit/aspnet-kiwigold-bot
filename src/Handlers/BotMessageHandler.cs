@@ -1,32 +1,39 @@
-﻿using Telegram.Bot;
-using Telegram.Bot.Types;
+﻿using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 
 using KiwigoldBot.Interfaces;
 using KiwigoldBot.Extensions;
+using KiwigoldBot.Settings;
 
 namespace KiwigoldBot.Handlers
 {
     public class BotMessageHandler : IBotMessageHandler
     {
+        private readonly BotSettings _settings;
+        private readonly IBotCommandPoolManager _commandPool;
+
         private readonly IBotTextHandler _textHandler;
         private readonly IBotPhotoHandler _photoHandler;
-        private readonly IBotCommandPoolManager _commandPool;
         
-        public BotMessageHandler(IBotTextHandler textHandler, IBotPhotoHandler photoHandler, IBotCommandPoolManager commandPool)
+        public BotMessageHandler(
+            BotSettings settings, 
+            IBotCommandPoolManager commandPool,
+            IBotTextHandler textHandler, 
+            IBotPhotoHandler photoHandler)
         {
+            _settings = settings;
+            _commandPool = commandPool;
+
             _textHandler = textHandler;
             _photoHandler = photoHandler;
-            _commandPool = commandPool;
         }
 
         public async Task HandleMessageAsync(Message message, CancellationToken cancellationToken)
         {
-            if (message.Type == MessageType.Text && message.Text!.IsCommand())
-            {
-                _commandPool.Clear();
-            }
-            else if (_commandPool.IsActive())
+            MemorizeBotChat(message);
+            MemorizeLastMessage(message);
+
+            if (CommandPoolIsActive(message))
             {
                 await _commandPool.ExecuteLastAsync(message, cancellationToken);
 
@@ -48,6 +55,36 @@ namespace KiwigoldBot.Handlers
             // TODO: log
 
             return Task.CompletedTask;
+        }
+
+        private void MemorizeBotChat(Message message)
+        {
+            if (_settings.BotChat == null)
+            {
+                var botChat = message.Chat;
+
+                if (botChat != null)
+                    _settings.BotChat = botChat;
+            }
+        }
+
+        private void MemorizeLastMessage(Message message) 
+        {
+            _settings.LastMessage = message;
+        }
+
+        private bool CommandPoolIsActive(Message message)
+        {
+            if (message.Type == MessageType.Text && message.Text!.IsCommand())
+            {
+                _commandPool.Clear();
+            }
+            else if (_commandPool.IsActive())
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

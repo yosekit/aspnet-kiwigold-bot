@@ -9,5 +9,9 @@ namespace KiwigoldBot.Settings
         public string HostAddress { get; set; }
         public string Route { get; set; }
         public IEnumerable<BotCommand> Commands { get; set; }
+
+        public Chat BotChat{ get; set; }
+        public Chat ChannelChat { get; set; }
+        public Message LastMessage { get; set; }
     }
 }

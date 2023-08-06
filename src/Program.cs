@@ -23,6 +23,7 @@ builder.Services.AddBotCommands();
 builder.Services.AddBotCallbacks();
 builder.Services.AddBotHandlers();
 
+builder.Services.AddScoped<IBotMessenger, BotMessenger>();
 builder.Services.AddScoped<IBotPictureService, BotPictureService>();
 builder.Services.AddScoped<IBotAuthorService, BotAuthorService>();
 builder.Services.AddScoped<IBotTitleService, BotTitleService>();

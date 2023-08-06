@@ -65,7 +65,6 @@ namespace KiwigoldBot.Extensions.Di
 
         public static IServiceCollection AddBotCallbacks(this IServiceCollection services)
         {
-            services.AddSingleton<IBotCallbackStateManager, BotCallbackStateManager>();
             services.AddScoped<IBotCallbackResolver, BotCallbackResolver>();
 
             return services
@@ -82,6 +81,7 @@ namespace KiwigoldBot.Extensions.Di
                 .AddScoped<IBotTextHandler, BotTextHandler>()
                 .AddScoped<IBotMessageHandler, BotMessageHandler>()
                 .AddScoped<IBotCallbackQueryHandler, BotCallbackQueryHandler>()
+                .AddScoped<IBotChannelPostHandler, BotChannelPostHandler>()
                 .AddScoped<IBotUpdateHandler, BotUpdateHandler>();
         }
     }

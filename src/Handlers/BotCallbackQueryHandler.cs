@@ -1,49 +1,35 @@
 ﻿using Telegram.Bot.Types;
 
 using KiwigoldBot.Interfaces;
+using KiwigoldBot.Helpers;
 
 namespace KiwigoldBot.Handlers
 {
     public class BotCallbackQueryHandler : IBotCallbackQueryHandler
     {
-        private readonly IBotCallbackStateManager _callbackState;
         private readonly IBotCallbackResolver _callbacks;
 
-        public BotCallbackQueryHandler(IBotCallbackStateManager callbackState, IBotCallbackResolver callbacks)
+        public BotCallbackQueryHandler(IBotCallbackResolver callbacks)
         {
-            _callbackState = callbackState;
             _callbacks = callbacks;
         }
 
         public async Task HandleCallbackQueryAsync(CallbackQuery callbackQuery, CancellationToken cancellationToken)
         {
-            // TODO: check callbackQuery
+            // TODO: check callbackQuery on Data is null
 
-            await RequestAsync(callbackQuery.Data, callbackQuery.Message, cancellationToken);
-        }
+            (Type callbackType, string callbackData) = BotCallbackDataConvert.ToTypeAndData(callbackQuery.Data!);
 
-        private async Task RequestAsync(string callbackData, Message message, CancellationToken cancellationToken)
-        {
-            var activeType = _callbackState.GetActive();
-            if(activeType == null)
+            var callback = _callbacks.Get(callbackType);
+
+            if (callback == null)
             {
                 // TODO: log
 
                 return;
             }
 
-            var active = _callbacks.Get(activeType);
-            if (active == null)
-            {
-                // TODO: log
-
-                return;
-            }
-
-            await active.InvokeAsync(callbackData, message, cancellationToken);
-
-            _callbackState.RemoveActive();
+            await callback.InvokeAsync(callbackData, callbackQuery.Message!, cancellationToken);
         }
-
     }
 }

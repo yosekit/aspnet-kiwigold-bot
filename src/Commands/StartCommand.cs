@@ -7,19 +7,18 @@ namespace KiwigoldBot.Commands
 {
     public class StartCommand : IBotCommand
     {
-        private readonly ITelegramBotClient _client;
+        private readonly IBotMessenger _messenger;
 
-        public StartCommand(ITelegramBotClient client)
+        public StartCommand(IBotMessenger messenger)
         {
-            _client = client;
+            _messenger = messenger;
         }
 
         public async Task ExecuteAsync(Message message, CancellationToken cancellationToken)
         {
             string text = "Hello, I'm TestBot.";
 
-            await _client.SendTextMessageAsync(message.Chat.Id, text,
-                cancellationToken: cancellationToken);
+            await _messenger.SendTextAsync(text, cancellationToken: cancellationToken);
         }
     }
 }

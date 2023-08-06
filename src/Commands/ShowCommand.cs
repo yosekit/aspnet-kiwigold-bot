@@ -1,39 +1,32 @@
-﻿using Telegram.Bot;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
-
+﻿using Telegram.Bot.Types;
 using KiwigoldBot.Interfaces;
 using KiwigoldBot.Callbacks;
+using KiwigoldBot.Helpers;
 
 namespace KiwigoldBot.Commands
 {
     public class ShowCommand : IBotCommand
     {
-        private readonly ITelegramBotClient _client;
-        private readonly IBotCallbackStateManager _callbackState;
+        private readonly IBotMessenger _messenger;
 
-        public ShowCommand(ITelegramBotClient client, IBotCallbackStateManager callbackState)
+        public ShowCommand(IBotMessenger messenger)
         {
-            _client = client;
-            _callbackState = callbackState;
+            _messenger = messenger;
         }
 
         public async Task ExecuteAsync(Message message, CancellationToken cancellationToken)
         {
-            string text = "Choose needed data to show";
+            var inlineKeyboard = BotReplyMarkup
+                .InlineKeyboard()
+                .WithCallbackData<ShowCallback>(new()
+                {
+                    ["Picture"] = ShowCallbackData.Picture.ToString(),
+                    ["Author"] = ShowCallbackData.Author.ToString(),
+                    ["Title"] = ShowCallbackData.Title.ToString(),
+                    ["Hashtag"] = ShowCallbackData.Hashtag.ToString(),
+                });
 
-            var inlineKeyboard = new InlineKeyboardMarkup(new[]
-            {
-                InlineKeyboardButton.WithCallbackData("Picture", ShowCallbackData.Picture.ToString()),
-                InlineKeyboardButton.WithCallbackData("Author", ShowCallbackData.Author.ToString()),
-                InlineKeyboardButton.WithCallbackData("Title", ShowCallbackData.Title.ToString()),
-                InlineKeyboardButton.WithCallbackData("Hashtag", ShowCallbackData.Hashtag.ToString()),
-            });
-
-            _callbackState.SetActive<ShowCallback>();
-
-            await _client.SendTextMessageAsync(message.Chat.Id, text,
-                replyMarkup: inlineKeyboard, cancellationToken: cancellationToken);
+            await _messenger.SendTextAsync("Choose needed data to show", inlineKeyboard, cancellationToken: cancellationToken);
         }
     }
 }
