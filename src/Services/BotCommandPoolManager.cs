@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-using Telegram.Bot.Types;
+﻿using Telegram.Bot.Types;
 
 using KiwigoldBot.Interfaces;
 
@@ -10,7 +8,7 @@ namespace KiwigoldBot.Services
     {
         private readonly Queue<Func<Message, CancellationToken, Task>> _pool = new();
 
-        public bool IsActive() => _pool.Count > 0;
+        public bool IsActive => _pool.Count > 0;
 
         public IBotCommandPoolManager Add(Func<Message, CancellationToken, Task> action)
         {

@@ -57,6 +57,7 @@ namespace KiwigoldBot.Extensions.Di
             return services
                 .AddScoped<IBotCommand, StartCommand>()
                 .AddScoped<IBotCommand, HelpCommand>()
+                .AddScoped<IBotCommand, PostCommand>()
                 .AddScoped<IBotCommand, AddAuthorCommand>()
                 .AddScoped<IBotCommand, AddTitleCommand>()
                 .AddScoped<IBotCommand, AddHashtagCommand>()
@@ -77,6 +78,7 @@ namespace KiwigoldBot.Extensions.Di
         {
             return services
                 .AddScoped<IBotCommandHandler, BotCommandHandler>()
+                .AddScoped<IBotLinkHandler, BotLinkHandler>()
                 .AddScoped<IBotPhotoHandler, BotPhotoHandler>()
                 .AddScoped<IBotTextHandler, BotTextHandler>()
                 .AddScoped<IBotMessageHandler, BotMessageHandler>()

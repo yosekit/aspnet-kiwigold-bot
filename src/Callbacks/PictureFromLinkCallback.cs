@@ -31,7 +31,7 @@ namespace KiwigoldBot.Callbacks
                     {
                         string fileId = message.Photo!.Last().FileId;
 
-                        await _pictureService.SavePictureAsync(fileId, message, cancellationToken);
+                        await _pictureService.SavePictureAsync(fileId, cancellationToken);
                         break;
                     }
 

@@ -18,7 +18,7 @@ namespace KiwigoldBot.Services
             _repository = repository;
         }
 
-        public async Task SavePictureAsync(string fileId, Message message, CancellationToken cancellationToken)
+        public async Task SavePictureAsync(string fileId, CancellationToken cancellationToken)
         {
             bool added = _repository.Add(new Picture { FileId = fileId });
 
@@ -39,7 +39,7 @@ namespace KiwigoldBot.Services
             }
         }
 
-        public async Task SendPictureAsync(int pictureId, Message message, CancellationToken cancellationToken)
+        public async Task SendPictureAsync(int pictureId, CancellationToken cancellationToken)
         {
             var picture = _repository.Get<Picture>(pictureId);
 
@@ -53,7 +53,7 @@ namespace KiwigoldBot.Services
             }
         }
 
-        public async Task SendPictureFromLinkAsync(string url, Message message, CancellationToken cancellationToken)
+        public async Task SendPictureFromUrlAsync(string url, CancellationToken cancellationToken)
         {
             var inlineKeyboard = BotReplyMarkup
                 .InlineKeyboard()

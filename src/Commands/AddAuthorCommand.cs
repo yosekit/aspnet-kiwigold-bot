@@ -2,20 +2,24 @@
 using Telegram.Bot.Types;
 
 using KiwigoldBot.Interfaces;
+using KiwigoldBot.Models;
 
 namespace KiwigoldBot.Commands
 {
     public class AddAuthorCommand : IBotCommand
     {
-        private readonly ITelegramBotClient _client;
+        private readonly IBotMessenger _messenger;
         private readonly IBotCommandPoolManager _pool;
-        private readonly IBotAuthorService _service;
+        private readonly IDbRepository _repository;
 
-        public AddAuthorCommand(ITelegramBotClient client, IBotCommandPoolManager pool, IBotAuthorService service)
+        public AddAuthorCommand(
+            IBotMessenger messenger, 
+            IBotCommandPoolManager pool,
+            IDbRepository repository)
         {
-            _client = client;
+            _messenger = messenger;
             _pool = pool;
-            _service = service;
+            _repository = repository;
         }
 
         public async Task ExecuteAsync(Message message, CancellationToken cancellationToken)
@@ -29,17 +33,16 @@ namespace KiwigoldBot.Commands
 
         private async Task SendRequestAsync(Message message, CancellationToken cancellationToken)
         {
-            string text = "Enter the author name (Any characters).";
-
-            await _client.SendTextMessageAsync(message.Chat.Id, text,
-                cancellationToken: cancellationToken);
+            await _messenger.SendTextAsync("Enter the author name (Any characters).", cancellationToken: cancellationToken);
         }
 
-        private async Task AddAuthorAsync(Message message, CancellationToken cancellationToken)
+        private Task AddAuthorAsync(Message message, CancellationToken cancellationToken)
         {
             string author = message.Text!;
 
-            await _service.SaveAuthorAsync(author, message, cancellationToken);
+            _repository.Add(new Author { Name = author });
+
+            return Task.CompletedTask;
         }
     }
 }

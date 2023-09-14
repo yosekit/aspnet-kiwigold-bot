@@ -25,9 +25,6 @@ builder.Services.AddBotHandlers();
 
 builder.Services.AddScoped<IBotMessenger, BotMessenger>();
 builder.Services.AddScoped<IBotPictureService, BotPictureService>();
-builder.Services.AddScoped<IBotAuthorService, BotAuthorService>();
-builder.Services.AddScoped<IBotTitleService, BotTitleService>();
-builder.Services.AddScoped<IBotHashtagService, BotHashtagService>();
 
 // hosted service
 builder.Services.AddHostedService<BotWebhookHosted>();

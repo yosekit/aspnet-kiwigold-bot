@@ -4,7 +4,7 @@ namespace KiwigoldBot.Interfaces
 {
     public interface IBotCommandPoolManager
     {
-        public bool IsActive();
+        public bool IsActive { get; }
         public IBotCommandPoolManager Add(Func<Message, CancellationToken, Task> action);
         public IBotCommandPoolManager Add(IEnumerable<Func<Message, CancellationToken, Task>> actions);
         public void Clear();

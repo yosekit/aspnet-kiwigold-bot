@@ -10,19 +10,16 @@ namespace KiwigoldBot.Handlers
     public class BotMessageHandler : IBotMessageHandler
     {
         private readonly BotSettings _settings;
-        private readonly IBotCommandPoolManager _commandPool;
 
         private readonly IBotTextHandler _textHandler;
         private readonly IBotPhotoHandler _photoHandler;
         
         public BotMessageHandler(
             BotSettings settings, 
-            IBotCommandPoolManager commandPool,
             IBotTextHandler textHandler, 
             IBotPhotoHandler photoHandler)
         {
             _settings = settings;
-            _commandPool = commandPool;
 
             _textHandler = textHandler;
             _photoHandler = photoHandler;
@@ -32,13 +29,6 @@ namespace KiwigoldBot.Handlers
         {
             MemorizeBotChat(message);
             MemorizeLastMessage(message);
-
-            if (CommandPoolIsActive(message))
-            {
-                await _commandPool.ExecuteLastAsync(message, cancellationToken);
-
-                return;
-            }
 
             var handler = message.Type switch
             {
@@ -71,20 +61,6 @@ namespace KiwigoldBot.Handlers
         private void MemorizeLastMessage(Message message) 
         {
             _settings.LastMessage = message;
-        }
-
-        private bool CommandPoolIsActive(Message message)
-        {
-            if (message.Type == MessageType.Text && message.Text!.IsCommand())
-            {
-                _commandPool.Clear();
-            }
-            else if (_commandPool.IsActive())
-            {
-                return true;
-            }
-
-            return false;
         }
     }
 }

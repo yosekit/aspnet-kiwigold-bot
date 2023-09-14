@@ -4,6 +4,8 @@ namespace KiwigoldBot.Interfaces
 {
     public interface IBotCommandHandler
     {
-        public Task HandleCommandAsync(Message message, CancellationToken cancellationToken);
+        public bool IsCommandActive { get; }
+        public Task ExecuteActiveCommandAsync(Message message, CancellationToken cancellationToken);
+        public Task ExecuteNewCommandAsync(Message message, CancellationToken cancellationToken);
     }
 }

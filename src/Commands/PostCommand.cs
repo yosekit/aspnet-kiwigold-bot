@@ -2,18 +2,21 @@
 using Telegram.Bot.Types;
 
 using KiwigoldBot.Interfaces;
+using KiwigoldBot.Settings;
 
 namespace KiwigoldBot.Commands
 {
-    public class AddTitleCommand : IBotCommand
+    public class PostCommand : IBotCommand
     {
         private readonly IBotMessenger _messenger;
         private readonly IBotCommandPoolManager _pool;
+        private readonly IBotPictureService _pictureService;
 
-        public AddTitleCommand(IBotMessenger messenger, IBotCommandPoolManager pool)
+        public PostCommand(IBotMessenger messenger, IBotCommandPoolManager pool, IBotPictureService pictureService)
         {
             _messenger = messenger;
             _pool = pool;
+            _pictureService = pictureService;
         }
 
         public async Task ExecuteAsync(Message message, CancellationToken cancellationToken)
@@ -22,19 +25,17 @@ namespace KiwigoldBot.Commands
             await SendRequestAsync(message, cancellationToken);
 
             // добавить остальные методы в пул
-            _pool.Add(AddTitleAsync);
+            _pool.Add(PostMessageAsync);
         }
 
         private async Task SendRequestAsync(Message message, CancellationToken cancellationToken)
         {
-            await _messenger.SendTextAsync("Enter the title name (Any characters).", cancellationToken: cancellationToken);
+            await _messenger.SendTextAsync("Enter the message to post.", cancellationToken: cancellationToken);
         }
 
-        private async Task AddTitleAsync(Message message, CancellationToken cancellationToken)
+        private async Task PostMessageAsync(Message message, CancellationToken cancellationToken)
         {
-            string title = message.Text!;
-
-            /*await _service.SaveTitleAsync(title, message, cancellationToken);*/
+            await _messenger.SendTextAsync("From /post success", targetChat: BotTargetChat.Channel, cancellationToken: cancellationToken);
         }
     }
 }

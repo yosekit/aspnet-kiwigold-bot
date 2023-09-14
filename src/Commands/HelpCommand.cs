@@ -6,11 +6,11 @@ namespace KiwigoldBot.Commands
 {
     public class HelpCommand : IBotCommand
     {
-        private readonly ITelegramBotClient _client;
+        private readonly IBotMessenger _messenger;
 
-        public HelpCommand(ITelegramBotClient client)
+        public HelpCommand(IBotMessenger messenger)
         {
-            _client = client;
+            _messenger = messenger;
         }
 
         public async Task ExecuteAsync(Message message, CancellationToken cancellationToken)
@@ -23,7 +23,7 @@ namespace KiwigoldBot.Commands
                 /help - help message
                 """;
 
-            await _client.SendTextMessageAsync(message.Chat.Id, text, cancellationToken: cancellationToken);
+            await _messenger.SendTextAsync(text, cancellationToken: cancellationToken);
         }
     }
 }

@@ -27,11 +27,11 @@ namespace KiwigoldBot.Services
                 cancellationToken: cancellationToken);
         }
 
-        public async Task SendPhotoAsync(string fileIdOrUrl, IReplyMarkup? replyMarkup = null, BotTargetChat targetChat = BotTargetChat.Bot, CancellationToken cancellationToken = default)
+        public async Task SendPhotoAsync(string photoIdOrUrl, IReplyMarkup? replyMarkup = null, BotTargetChat targetChat = BotTargetChat.Bot, CancellationToken cancellationToken = default)
         {
             await _client.SendPhotoAsync(
                 chatId: ChatId(targetChat), 
-                photo: fileIdOrUrl, 
+                photo: photoIdOrUrl, 
                 replyMarkup: replyMarkup,
                 cancellationToken: cancellationToken);
         }

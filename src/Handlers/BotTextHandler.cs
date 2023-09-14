@@ -1,66 +1,55 @@
 ﻿using Telegram.Bot.Types;
 
 using KiwigoldBot.Interfaces;
-using KiwigoldBot.Extensions;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace KiwigoldBot.Handlers
 {
     public class BotTextHandler : IBotTextHandler
     {
         private readonly IBotCommandHandler _commandHandler;
-        private readonly IBotPictureService _pictureService;
+        private readonly IBotLinkHandler _linkHandler;
 
-        public BotTextHandler(IBotCommandHandler commandHandler, IBotPictureService pictureService)
+        public BotTextHandler(
+            IBotCommandHandler commandHandler,
+            IBotLinkHandler linkHandler)
         {
             _commandHandler = commandHandler;
-            _pictureService = pictureService;
+            _linkHandler = linkHandler;
         }
 
         public async Task HandleTextAsync(Message message, CancellationToken cancellationToken)
         {
             string text = message.Text!;
 
-            var handler = text.GetTextType() switch
+            if (text.IsCommand())
             {
-                TextType.Command => _commandHandler.HandleCommandAsync(message, cancellationToken),
-                // TODO: add LinkHandler because there are different links
-                TextType.Link => _pictureService.SendPictureFromLinkAsync(text, message, cancellationToken),
-                TextType.PlainText => this.HandlePlainTextAsync(message, cancellationToken),
-                _ => OnDiscard(message, cancellationToken),
-            };
-
-            await handler;
+                await _commandHandler.ExecuteNewCommandAsync(message, cancellationToken);
+            }
+            else if (_commandHandler.IsCommandActive)
+            {
+                await _commandHandler.ExecuteActiveCommandAsync(message, cancellationToken);
+            }
+            else if (text.IsLink())
+            {
+                await _linkHandler.HandleLinkAsync(message, cancellationToken);
+            }
+            else return;
         }
 
-        private Task HandlePlainTextAsync(Message message, CancellationToken cancellationToken)
-        {
-            return Task.CompletedTask;
-        }
-
-        private Task OnDiscard(Message message, CancellationToken cancellationToken)
-        {
-            // TODO: log
-
-            return Task.CompletedTask;
-        }
     }
 
     public static class StringExtensions
     {
-        public static TextType GetTextType(this string origin)
+        public static bool IsCommand(this string origin)
         {
-            if (origin.IsCommand()) return TextType.Command;
-            if (origin.IsLink()) return TextType.Link;
-            return TextType.PlainText;
+            // TODO: improve handling logic
+
+            return origin.StartsWith("/");
         }
-    }
 
-
-    public enum TextType
-    {
-        PlainText,
-        Command,
-        Link,
+        public static bool IsLink(this string origin)
+        {
+            return Uri.TryCreate(origin, UriKind.Absolute, out _);
+        }
     }
 }

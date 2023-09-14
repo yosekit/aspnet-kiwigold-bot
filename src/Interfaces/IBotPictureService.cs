@@ -4,9 +4,8 @@ namespace KiwigoldBot.Interfaces
 {
     public interface IBotPictureService
     {
-        public Task ShowAllPicturesAsync(Message message, CancellationToken cancellationToken);
-        public Task SavePictureAsync(string fileId, Message message, CancellationToken cancellationToken);
-        public Task SendPictureAsync(int pictureId, Message message, CancellationToken cancellationToken);
-        public Task SendPictureFromLinkAsync(string link, Message message, CancellationToken cancellationToken);
+        public Task SavePictureAsync(string fileId, CancellationToken cancellationToken);
+        public Task SendPictureAsync(int pictureId, CancellationToken cancellationToken);
+        public Task SendPictureFromUrlAsync(string url, CancellationToken cancellationToken);
     }
 }

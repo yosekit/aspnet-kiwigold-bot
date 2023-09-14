@@ -1,26 +1,20 @@
-﻿using KiwigoldBot.Interfaces;
-using Telegram.Bot.Types;
+﻿using Telegram.Bot.Types;
+
+using KiwigoldBot.Interfaces;
+using KiwigoldBot.Models;
+using KiwigoldBot.Extensions;
 
 namespace KiwigoldBot.Callbacks
 {
     public class ShowCallback : IBotCallback
     {
-        private readonly IBotPictureService _pictureService;
-        private readonly IBotAuthorService _authorService;
-        private readonly IBotTitleService _titleService;
-        private readonly IBotHashtagService _hashtagService;
+        private readonly IBotMessenger _messenger;
+        private readonly IDbRepository _repository;
 
-        public ShowCallback(
-            IBotPictureService pictureService,
-            IBotAuthorService authorService,
-            IBotTitleService titleService,
-            IBotHashtagService hashtagService
-            )
+        public ShowCallback(IBotMessenger messenger, IDbRepository repository)
         {
-            _pictureService = pictureService;
-            _authorService = authorService;
-            _titleService = titleService;
-            _hashtagService = hashtagService;
+            _messenger = messenger;
+            _repository = repository;
         }
 
         public async Task InvokeAsync(string data, Message message, CancellationToken cancellationToken)
@@ -32,15 +26,25 @@ namespace KiwigoldBot.Callbacks
                 return;
             }
 
-            var method = parsedData switch
+            var models = parsedData switch
             {
-                ShowCallbackData.Picture => _pictureService.ShowAllPicturesAsync(message, cancellationToken),
-                ShowCallbackData.Author => _authorService.ShowAllAuthorsAsync(message, cancellationToken),
-                ShowCallbackData.Title => _titleService.ShowAllTitlesAsync(message, cancellationToken),
-                ShowCallbackData.Hashtag => _hashtagService.ShowAllHashtagAsync(message, cancellationToken),
+                ShowCallbackData.Picture => _repository.GetAll<Picture>().Select(x => x.ToString()),
+                ShowCallbackData.Author  => _repository.GetAll<Author>() .Select(x => x.ToString()),
+                ShowCallbackData.Title   => _repository.GetAll<Title>()  .Select(x => x.ToString()),
+                ShowCallbackData.Hashtag => _repository.GetAll<Hashtag>().Select(x => x.ToString()),
+                _ => throw new NotImplementedException(), 
             };
 
-            await method;
+            if (models.IsAny())
+            {
+                string text = $"Here are the saved data:\n\n{string.Join("\n", models)}";
+
+                await _messenger.SendTextAsync(text, cancellationToken: cancellationToken);
+            }
+            else
+            {
+                await _messenger.SendTextAsync("You haven't saved data...", cancellationToken: cancellationToken);
+            }
         }
     }
 

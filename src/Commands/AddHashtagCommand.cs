@@ -7,15 +7,13 @@ namespace KiwigoldBot.Commands
 {
     public class AddHashtagCommand : IBotCommand
     {
-        private readonly ITelegramBotClient _client;
+        private readonly IBotMessenger _messenger;
         private readonly IBotCommandPoolManager _pool;
-        private readonly IBotHashtagService _service;
 
-        public AddHashtagCommand(ITelegramBotClient client, IBotCommandPoolManager pool, IBotHashtagService service)
+        public AddHashtagCommand(IBotMessenger messenger, IBotCommandPoolManager pool)
         {
-            _client = client;
+            _messenger = messenger;
             _pool = pool;
-            _service = service;
         }
 
 
@@ -30,17 +28,14 @@ namespace KiwigoldBot.Commands
 
         private async Task SendRequestAsync(Message message, CancellationToken cancellationToken)
         {
-            string text = "Enter the hashtag (as snake_case).";
-
-            await _client.SendTextMessageAsync(message.Chat.Id, text,
-                cancellationToken: cancellationToken);
+            await _messenger.SendTextAsync("Enter the hashtag (as snake_case).", cancellationToken: cancellationToken);
         }
 
         private async Task AddHashtagAsync(Message message, CancellationToken cancellationToken)
         {
             string hashtag = message.Text!;
 
-            await _service.SaveHashtagAsync(hashtag, message, cancellationToken);
+            /*await _service.SaveHashtagAsync(hashtag, message, cancellationToken);*/
         }
     }
 }
