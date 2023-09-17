@@ -2,10 +2,13 @@
 {
     public interface IDbRepository
     {
-        public IEnumerable<T> GetAll<T>();
-        public T? Get<T>(int id);
-        public bool Remove<T>(T entity);
-        public bool Add<T>(T entity);
-        public bool Update<T>(T entity);
+        public string? Table { get; set; }
+
+        public IDbRepository FromTable(string name);
+
+        public IEnumerable<string> GetAll();
+        public bool Add(string data);
+        public bool Update(string data, string updated);
+        public bool Remove(string data);
     }
 }

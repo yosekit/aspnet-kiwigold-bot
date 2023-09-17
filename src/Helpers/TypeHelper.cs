@@ -15,5 +15,7 @@
 
             return null;
         }
+
+        public static string ByType<T>() => typeof(T).Name;
     }
 }

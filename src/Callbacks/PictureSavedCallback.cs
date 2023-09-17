@@ -16,12 +16,7 @@ namespace KiwigoldBot.Callbacks
 
         public async Task InvokeAsync(string data, Message message, CancellationToken cancellationToken)
         {
-            if(!int.TryParse(data, out int pictureId))
-            {
-                return;
-            }
-
-            await _pictureService.SendPictureAsync(pictureId, message, cancellationToken);
+            await _pictureService.SendPictureAsync(fileId: data, cancellationToken);
         }
     }
 }

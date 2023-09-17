@@ -1,9 +1,8 @@
-﻿using Telegram.Bot.Types;
-
-using KiwigoldBot.Callbacks;
+﻿using KiwigoldBot.Callbacks;
 using KiwigoldBot.Interfaces;
-using KiwigoldBot.Models;
 using KiwigoldBot.Helpers;
+using KiwigoldBot.Data;
+using KiwigoldBot.Extensions;
 
 namespace KiwigoldBot.Services
 {
@@ -20,12 +19,15 @@ namespace KiwigoldBot.Services
 
         public async Task SavePictureAsync(string fileId, CancellationToken cancellationToken)
         {
-            bool added = _repository.Add(new Picture { FileId = fileId });
+            _repository.Table = DbTables.Picture;
+
+            bool added = _repository.Add(fileId);
 
             if (added)
             {
-                var pictures = _repository.GetAll<Picture>();
-                var callbackData = pictures.TakeLast(5).Select(x => x.Id.ToString()).ToDictionary(x => x);
+                var pictures = _repository.GetAll();
+
+                var callbackData = pictures.TakeLast(5).ToDictionary(x => x.TruncateLong(5));
 
                 var inlineKeyboard = BotReplyMarkup
                     .InlineKeyboard()
@@ -39,13 +41,15 @@ namespace KiwigoldBot.Services
             }
         }
 
-        public async Task SendPictureAsync(int pictureId, CancellationToken cancellationToken)
+        public async Task SendPictureAsync(string fileId, CancellationToken cancellationToken)
         {
-            var picture = _repository.Get<Picture>(pictureId);
+            _repository.Table = DbTables.Picture;
 
-            if (picture != null)
+            var pictures = _repository.GetAll();
+
+            if (pictures.Contains(fileId))
             {
-                await _messenger.SendPhotoAsync(picture.FileId, cancellationToken: cancellationToken);
+                await _messenger.SendPhotoAsync(fileId, cancellationToken: cancellationToken);
             }
             else
             {

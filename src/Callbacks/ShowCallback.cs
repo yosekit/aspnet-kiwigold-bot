@@ -1,7 +1,7 @@
 ﻿using Telegram.Bot.Types;
 
 using KiwigoldBot.Interfaces;
-using KiwigoldBot.Models;
+using KiwigoldBot.Data;
 using KiwigoldBot.Extensions;
 
 namespace KiwigoldBot.Callbacks
@@ -28,10 +28,10 @@ namespace KiwigoldBot.Callbacks
 
             var models = parsedData switch
             {
-                ShowCallbackData.Picture => _repository.GetAll<Picture>().Select(x => x.ToString()),
-                ShowCallbackData.Author  => _repository.GetAll<Author>() .Select(x => x.ToString()),
-                ShowCallbackData.Title   => _repository.GetAll<Title>()  .Select(x => x.ToString()),
-                ShowCallbackData.Hashtag => _repository.GetAll<Hashtag>().Select(x => x.ToString()),
+                ShowCallbackData.Picture => _repository.FromTable(DbTables.Picture).GetAll(),
+                ShowCallbackData.Author  => _repository.FromTable(DbTables.Author).GetAll(),
+                ShowCallbackData.Title   => _repository.FromTable(DbTables.Title).GetAll(),
+                ShowCallbackData.Hashtag => _repository.FromTable(DbTables.Hashtag).GetAll(),
                 _ => throw new NotImplementedException(), 
             };
 

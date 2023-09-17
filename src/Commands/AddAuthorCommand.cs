@@ -2,7 +2,7 @@
 using Telegram.Bot.Types;
 
 using KiwigoldBot.Interfaces;
-using KiwigoldBot.Models;
+using KiwigoldBot.Data;
 
 namespace KiwigoldBot.Commands
 {
@@ -13,7 +13,7 @@ namespace KiwigoldBot.Commands
         private readonly IDbRepository _repository;
 
         public AddAuthorCommand(
-            IBotMessenger messenger, 
+            IBotMessenger messenger,
             IBotCommandPoolManager pool,
             IDbRepository repository)
         {
@@ -40,7 +40,7 @@ namespace KiwigoldBot.Commands
         {
             string author = message.Text!;
 
-            _repository.Add(new Author { Name = author });
+            _repository.FromTable(DbTables.Author).Add(author);
 
             return Task.CompletedTask;
         }

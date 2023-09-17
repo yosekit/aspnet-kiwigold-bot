@@ -13,18 +13,18 @@ namespace KiwigoldBot.Data
             _connectionManager = connectionManager;
         }
 
-        public IEnumerable<T> Query<T>(string sql, object? param = null)
+        public IEnumerable<string> Query(string sql, object? param = null)
         {
             using var conn = _connectionManager.GetConnection();
 
-            return conn.Query<T>(sql, param);
+            return conn.Query<string>(sql, param);
         }
 
-        public T QuerySingle<T>(string sql, object? param = null)
+        public string QuerySingle(string sql, object? param = null)
         {
             using var conn = _connectionManager.GetConnection();
 
-            return conn.QuerySingle<T>(sql, param);
+            return conn.QuerySingle<string>(sql, param);
         }
 
         public int Execute(string sql, object? param = null)
