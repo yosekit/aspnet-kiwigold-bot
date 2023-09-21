@@ -11,10 +11,10 @@ namespace KiwigoldBot.Services
             _commands = commands;
         }
 
-        public IBotCommand? Get(string name)
-        {
-            return _commands.FirstOrDefault(x =>
-                name == string.Concat("/", x.GetType().Name.Replace("Command", "").ToLower()));
-        }
+        public IBotCommand? GetCommand(string name) => 
+            _commands.FirstOrDefault(x => name == x.GetName());
+
+        public IBotCommand? GetCommand(Type type) =>
+            _commands.FirstOrDefault(x => type == x.GetType());
     }
 }

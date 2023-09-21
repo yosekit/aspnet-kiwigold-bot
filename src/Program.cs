@@ -20,7 +20,6 @@ builder.Services.AddBotClient();
 
 // services
 builder.Services.AddBotCommands();
-builder.Services.AddBotCallbacks();
 builder.Services.AddBotHandlers();
 
 builder.Services.AddScoped<IBotMessenger, BotMessenger>();

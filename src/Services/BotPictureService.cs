@@ -1,8 +1,8 @@
-﻿using KiwigoldBot.Callbacks;
-using KiwigoldBot.Interfaces;
+﻿using KiwigoldBot.Interfaces;
 using KiwigoldBot.Helpers;
 using KiwigoldBot.Data;
 using KiwigoldBot.Extensions;
+using KiwigoldBot.Commands;
 
 namespace KiwigoldBot.Services
 {
@@ -31,7 +31,7 @@ namespace KiwigoldBot.Services
 
                 var inlineKeyboard = BotReplyMarkup
                     .InlineKeyboard()
-                    .WithCallbackData<PictureSavedCallback>(callbackData);
+                    .WithCallbackData<AddCommand>(callbackData);
 
                 await _messenger.SendTextAsync("Picture was added!", inlineKeyboard, cancellationToken: cancellationToken);
             }
@@ -61,11 +61,7 @@ namespace KiwigoldBot.Services
         {
             var inlineKeyboard = BotReplyMarkup
                 .InlineKeyboard()
-                .WithCallbackData<PictureFromLinkCallback>(new()
-                {
-                    ["Save"] = PictureFromLinkCallbackData.Save.ToString(),
-                    ["Delete"] = PictureFromLinkCallbackData.Delete.ToString(),
-                });
+                .WithCallbackData<AddCommand>(new[] { "Save", "Delete" });
 
             await _messenger.SendPhotoAsync(url, inlineKeyboard, cancellationToken: cancellationToken);
         }

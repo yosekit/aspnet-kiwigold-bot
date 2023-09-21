@@ -26,8 +26,13 @@ namespace KiwigoldBot.Helpers
     public class BotInlineKeyboardBuilder
     {
         public InlineKeyboardMarkup WithCallbackData<T>(Dictionary<string, string> textAndCallbackDatas)
-            where T : IBotCallback =>
+            where T : IBotCommand => 
             new(textAndCallbackDatas.Select(x =>
                 InlineKeyboardButton.WithCallbackData(x.Key, BotCallbackDataConvert.ToString(typeof(T), x.Value))));
+
+        public InlineKeyboardMarkup WithCallbackData<T>(IEnumerable<string> textAndCallbackDatas)
+            where T : IBotCommand =>
+            new(textAndCallbackDatas.Select(x => 
+                InlineKeyboardButton.WithCallbackData(x, BotCallbackDataConvert.ToString(typeof(T), x))));
     }
 }

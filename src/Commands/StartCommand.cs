@@ -1,7 +1,4 @@
 ﻿using KiwigoldBot.Interfaces;
-using Telegram.Bot;
-using Telegram.Bot.Types;
-using Telegram.Bot.Types.ReplyMarkups;
 
 namespace KiwigoldBot.Commands
 {
@@ -14,11 +11,14 @@ namespace KiwigoldBot.Commands
             _messenger = messenger;
         }
 
-        public async Task ExecuteAsync(Message message, CancellationToken cancellationToken)
+        public async Task ExecuteAsync(string[]? args, BotCommandContext? context, CancellationToken cancellationToken)
         {
-            string text = "Hello, I'm TestBot.";
+            await _messenger.SendTextAsync("Hello, I'm TestBot.", cancellationToken: cancellationToken);
+        }
 
-            await _messenger.SendTextAsync(text, cancellationToken: cancellationToken);
+        public Task ExecuteNextAsync(string text, BotCommandContext? context, CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
         }
     }
 }

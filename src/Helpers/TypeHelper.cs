@@ -1,21 +1,12 @@
 ﻿namespace KiwigoldBot.Helpers
 {
-    class TypeHelper
+    public static class TypeHelper
     {
-        public static Type ByName(string name)
+        public static IEnumerable<Type> GetTypes(string @namespace)
         {
-            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies().Reverse())
-            {
-                var tt = assembly.GetType(name);
-                if (tt != null)
-                {
-                    return tt;
-                }
-            }
-
-            return null;
+            return AppDomain.CurrentDomain.GetAssemblies()
+                       .SelectMany(a => a.GetTypes())
+                       .Where(t => t.IsClass && t.Namespace == @namespace);
         }
-
-        public static string ByType<T>() => typeof(T).Name;
     }
 }
