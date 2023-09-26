@@ -7,13 +7,16 @@ using KiwigoldBot.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// settings
+// configuration settings
 builder.Services.AddBotSettings(builder.Configuration);
+builder.Services.AddProviderSettings(builder.Configuration);
+
+// connection string
+string connectionString = builder.Configuration.GetConnectionString("SqliteConnection")!;
 
 // data services
-builder.Services.AddDbConnectionManager(builder.Configuration.ConnectionString("Sqlite")!);
-builder.Services.AddSingleton<IDbContext, DapperContext>();
-builder.Services.AddSingleton<IDbRepository, GenericRepository>();
+builder.Services.AddDapperContext(settings => settings.UseSqliteServer(connectionString));
+builder.Services.AddScoped<IDbRepository, GenericRepository>();
 
 // http client
 builder.Services.AddBotClient();

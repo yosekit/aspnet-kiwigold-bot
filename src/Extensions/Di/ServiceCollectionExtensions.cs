@@ -13,6 +13,8 @@ namespace KiwigoldBot.Extensions.Di
 {
     public static class ServiceCollectionExtensions
     {
+        #region Http Client
+
         public static IServiceCollection AddBotClient(this IServiceCollection services)
         {
             services
@@ -27,6 +29,10 @@ namespace KiwigoldBot.Extensions.Di
             return services;
         }
 
+        #endregion
+
+        #region Configuration Settings
+
         public static IServiceCollection AddBotSettings(this IServiceCollection services,
             IConfiguration configuration, string section = "TelegramBot")
         {
@@ -35,17 +41,41 @@ namespace KiwigoldBot.Extensions.Di
             return services.AddSingleton(settings);
         }
 
-        public static IServiceCollection AddDbConnectionManager(this IServiceCollection services,
-            ConnectionStringSettings connectionString)
+        public static IServiceCollection AddProviderSettings(this IServiceCollection services,
+            IConfiguration configuration, string section = "Providers")
         {
-            DbProviderFactories.RegisterFactory(
-                 connectionString.Provider.InvariantName,
-                 connectionString.Provider.TypeAssemblyName);
+            var providers = configuration.GetSection(section).Get<ProviderSettings[]>()!;
 
-            return services.AddSingleton<IDbConnectionManager>(new DbConnectionManager(
-                DbProviderFactories.GetFactory(connectionString.Provider.InvariantName),
-                connectionString.ConnectionString));
+            return services
+                .AddSingleton<IEnumerable<ProviderSettings>>(providers)
+                .AddScoped<ProviderSettingsResolver>();
         }
+         
+        #endregion
+
+        #region Data Serives
+
+        public static IServiceCollection AddDapperContext(this IServiceCollection services,
+            Action<DapperSettingsBuilder> settings)
+        {
+            return services
+                .AddSingleton<DapperSettings>(sp =>
+                {
+                    var scoped = sp.CreateScope().ServiceProvider;
+
+                    var providers = scoped.GetRequiredService<ProviderSettingsResolver>();
+
+                    var builder = new DapperSettingsBuilder(providers);
+                    settings.Invoke(builder);
+
+                    return builder.Build();
+                })
+                .AddScoped<IDbContext, DapperContext>();
+        }
+
+        #endregion
+
+        #region Services
 
         public static IServiceCollection AddBotCommands(this IServiceCollection services)
         {
@@ -60,7 +90,7 @@ namespace KiwigoldBot.Extensions.Di
                 .AddScoped<IBotCommand, ShowCommand>()
                 .AddScoped<IBotCommand, AddCommand>()
                 .AddScoped<IBotCommand, DeleteCommand>();
-        }   
+        }
 
         public static IServiceCollection AddBotHandlers(this IServiceCollection services)
         {
@@ -74,5 +104,7 @@ namespace KiwigoldBot.Extensions.Di
                 .AddScoped<IBotChannelPostHandler, BotChannelPostHandler>()
                 .AddScoped<IBotUpdateHandler, BotUpdateHandler>();
         }
+
+        #endregion
     }
 }
